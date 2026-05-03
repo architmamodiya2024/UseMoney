@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Sun, Moon, Sunrise, User } from "lucide-react";
+import { Sun, Moon, Sunrise, Bell, Search } from "lucide-react";
 
 interface GreetingHeaderProps {
   isNewUser?: boolean;
@@ -10,61 +10,45 @@ interface GreetingHeaderProps {
 
 export function GreetingHeader({ isNewUser = false, userName = "Archit" }: GreetingHeaderProps) {
   const [greeting, setGreeting] = useState("");
-  const [time, setTime] = useState("");
 
   useEffect(() => {
     const updateTime = () => {
-      const now = new Date();
-      const hours = now.getHours();
-      
-      let g = "Good Evening";
-      if (hours >= 5 && hours < 12) g = "Good Morning";
-      else if (hours >= 12 && hours < 17) g = "Good Afternoon";
-      
-      setGreeting(g);
-      setTime(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      const hours = new Date().getHours();
+      if (hours >= 5 && hours < 12) setGreeting("Good Morning");
+      else if (hours >= 12 && hours < 17) setGreeting("Good Afternoon");
+      else setGreeting("Good Evening");
     };
-
     updateTime();
-    const timer = setInterval(updateTime, 60000);
-    return () => clearInterval(timer);
   }, []);
 
-  const getIcon = () => {
-    if (greeting.includes("Morning")) return <Sunrise className="w-6 h-6 text-orange-400" />;
-    if (greeting.includes("Afternoon")) return <Sun className="w-6 h-6 text-yellow-500" />;
-    return <Moon className="w-6 h-6 text-indigo-400" />;
-  };
-
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm">
-      <div className="flex items-center gap-4">
-        <div className="p-3 bg-zinc-50 dark:bg-zinc-900 rounded-2xl">
-          {getIcon()}
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
-            {greeting}, {userName}!
-          </h1>
-          <p className="text-zinc-500 dark:text-zinc-400 font-medium">
-            {isNewUser 
-              ? "Welcome to UseMoney! Let's start your financial journey." 
-              : "Welcome back! Ready to check your progress today?"}
-          </p>
-        </div>
+    <div className="flex items-center justify-between p-6 bg-transparent">
+      <div>
+        <h1 className="text-3xl font-bold text-white tracking-tight">
+          {isNewUser ? "Welcome, Trader!" : `Welcome back, ${userName}!`}
+        </h1>
+        <p className="text-zinc-500 text-sm mt-1 flex items-center gap-2">
+          {greeting} • <span className="text-emerald-400 font-medium">Market is Open</span>
+        </p>
       </div>
 
-      <div className="flex items-center gap-6 px-6 py-2 bg-zinc-50 dark:bg-zinc-900 rounded-2xl self-start md:self-center">
-        <div className="text-right">
-          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Local Time</p>
-          <p className="text-lg font-semibold text-zinc-700 dark:text-zinc-300">{time}</p>
+      <div className="flex items-center gap-4">
+        <div className="relative group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-emerald-400 transition-colors" />
+          <input 
+            type="text" 
+            placeholder="Search tickers..." 
+            className="bg-[#0f172a] border border-white/5 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all w-64"
+          />
         </div>
-        <div className="h-10 w-px bg-zinc-200 dark:bg-zinc-800" />
-        <div className="text-right">
-          <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Status</p>
-          <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
-            {isNewUser ? "Explorer" : "Pro User"}
-          </p>
+        <button className="p-2.5 rounded-xl bg-[#0f172a] border border-white/5 hover:bg-white/5 transition-all text-zinc-400 hover:text-white relative">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#0f172a]" />
+        </button>
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 p-[1px]">
+          <div className="w-full h-full rounded-[9px] bg-[#060b18] flex items-center justify-center">
+            <span className="text-emerald-400 font-bold text-xs">AM</span>
+          </div>
         </div>
       </div>
     </div>

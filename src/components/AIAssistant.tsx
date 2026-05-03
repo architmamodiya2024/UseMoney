@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Bot, User, Sparkles, X, Minimize2, Maximize2 } from "lucide-react";
+import { Send, Bot, User, Sparkles, X, Minimize2, Maximize2, ArrowUp, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -10,6 +10,7 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  status?: string[];
 }
 
 export function AIAssistant() {
@@ -17,13 +18,13 @@ export function AIAssistant() {
     {
       id: "1",
       role: "assistant",
-      content: "Hello! I'm your UseMoney AI. How can I help you with your finances today?",
+      content: "Welcome to StockSage. I've analyzed your portfolio across connected brokers. How can I assist your trading strategy today?",
       timestamp: new Date(),
     },
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true); // Default expanded for main view
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,122 +47,131 @@ export function AIAssistant() {
     setInput("");
     setIsTyping(true);
 
-    // Mock AI response
+    // Mock AI response with stepping status
     setTimeout(() => {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "That's a great question. Based on your current spending habits, I'd recommend looking at your 'Dining' category where you've exceeded your budget by 15% this week.",
+        content: "Based on your risk profile and current market volatility, I've identified a divergence in the IT sector. Would you like to see a backtest of the 'Mean Reversion' strategy for these tickers?",
         timestamp: new Date(),
+        status: ["Scanning holdings...", "Fetching fundamentals...", "Analyzing IT sector divergence"]
       };
       setMessages((prev) => [...prev, assistantMessage]);
       setIsTyping(false);
-    }, 1500);
+    }, 2000);
   };
 
   return (
     <div className={cn(
-      "fixed bottom-6 right-6 z-50 transition-all duration-500 ease-in-out",
-      isExpanded ? "w-[400px] h-[600px]" : "w-14 h-14"
+      "relative h-[700px] flex flex-col bg-[#0f172a]/50 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl"
     )}>
-      <AnimatePresence mode="wait">
-        {isExpanded ? (
-          <motion.div
-            key="expanded"
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="flex flex-col h-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden"
-          >
-            {/* Header */}
-            <div className="p-4 border-b border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white">UseMoney AI</h3>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Online</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setIsExpanded(false)} className="p-2 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-xl transition-colors">
-                  <Minimize2 className="w-4 h-4 text-zinc-500" />
-                </button>
-              </div>
-            </div>
+      {/* Traffic Lights & Header */}
+      <div className="p-5 border-b border-white/5 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="dot dot-red" />
+          <div className="dot dot-yellow" />
+          <div className="dot dot-green" />
+          <span className="ml-4 text-xs font-bold text-zinc-500 uppercase tracking-[0.2em]">STOCKSAGE AI</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+            LIVE PORTFOLIO
+          </div>
+        </div>
+      </div>
 
-            {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
-              {messages.map((m) => (
-                <div key={m.id} className={cn("flex gap-3", m.role === "user" ? "flex-row-reverse" : "flex-row")}>
-                  <div className={cn(
-                    "w-8 h-8 rounded-full shrink-0 flex items-center justify-center",
-                    m.role === "user" ? "bg-zinc-100 dark:bg-zinc-900" : "bg-indigo-50 dark:bg-indigo-950/30"
-                  )}>
-                    {m.role === "user" ? <User className="w-4 h-4 text-zinc-600" /> : <Sparkles className="w-4 h-4 text-indigo-600" />}
+      {/* Messages area */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth custom-scrollbar">
+        {messages.map((m) => (
+          <div key={m.id} className={cn("flex flex-col gap-3", m.role === "user" ? "items-end" : "items-start")}>
+            <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+              {m.role === "assistant" ? (
+                <>
+                  <div className="w-5 h-5 rounded bg-emerald-500 flex items-center justify-center">
+                    <span className="text-white text-[10px]">₹</span>
                   </div>
-                  <div className={cn(
-                    "max-w-[80%] p-3 rounded-2xl text-sm",
-                    m.role === "user" 
-                      ? "bg-indigo-600 text-white rounded-tr-none" 
-                      : "bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 rounded-tl-none border border-zinc-100 dark:border-zinc-800"
-                  )}>
-                    {m.content}
-                  </div>
-                </div>
-              ))}
-              {isTyping && (
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-indigo-600" />
-                  </div>
-                  <div className="bg-zinc-50 dark:bg-zinc-900 p-3 rounded-2xl rounded-tl-none flex gap-1">
-                    <span className="w-1 h-1 rounded-full bg-zinc-400 animate-bounce" />
-                    <span className="w-1 h-1 rounded-full bg-zinc-400 animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1 h-1 rounded-full bg-zinc-400 animate-bounce [animation-delay:0.4s]" />
-                  </div>
+                  <span>STOCKSAGE</span>
+                </>
+              ) : (
+                <span>YOU</span>
+              )}
+            </div>
+            
+            <div className={cn(
+              "max-w-[85%] p-5 rounded-2xl leading-relaxed text-sm",
+              m.role === "user" 
+                ? "bg-[#1e293b] text-white border border-white/5" 
+                : "bg-transparent text-zinc-200"
+            )}>
+              {m.content}
+              
+              {m.status && (
+                <div className="mt-4 space-y-2">
+                  {m.status.map((s, i) => (
+                    <div key={i} className="flex items-center gap-2 text-emerald-400 text-[11px] font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      {s}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
-
-            {/* Input */}
-            <div className="p-4 border-t border-zinc-100 dark:border-zinc-900">
-              <div className="relative flex items-center">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  placeholder="Ask anything about your money..."
-                  className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 pr-12 text-zinc-900 dark:text-white"
-                />
-                <button
-                  onClick={handleSend}
-                  className="absolute right-2 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all shadow-lg shadow-indigo-500/20"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.button
-            key="collapsed"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setIsExpanded(true)}
-            className="w-full h-full bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-500/40"
-          >
-            <Bot className="w-6 h-6" />
-          </motion.button>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="flex items-center gap-2 text-zinc-500">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.2s]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.4s]" />
+          </div>
         )}
-      </AnimatePresence>
+      </div>
+
+      {/* Pill-shaped Input Area */}
+      <div className="p-8 pt-0">
+        <div className="relative flex items-center bg-[#1e293b]/50 backdrop-blur-md border border-white/10 rounded-full px-6 py-4 shadow-2xl focus-within:border-emerald-500/50 transition-all group">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Ask StockSage about your holdings..."
+            className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-zinc-500"
+          />
+          <button
+            onClick={handleSend}
+            className="p-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-full transition-all shadow-lg shadow-emerald-500/20"
+          >
+            <ArrowUp className="w-4 h-4" />
+          </button>
+        </div>
+        
+        {/* Quick actions */}
+        <div className="flex gap-2 mt-4 justify-center">
+          {["Analyze NIFTY50", "Roast my portfolio", "Best IT stocks?"].map((q) => (
+            <button
+              key={q}
+              onClick={() => { setInput(q); }}
+              className="px-4 py-1.5 rounded-full border border-white/5 bg-white/5 text-[11px] text-zinc-400 hover:bg-white/10 hover:text-white transition-all"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+      `}</style>
     </div>
   );
 }
