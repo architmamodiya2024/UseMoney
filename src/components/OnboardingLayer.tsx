@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Target, Wallet, CreditCard, Sparkles, RefreshCw } from "lucide-react";
+import { Send, Target, Wallet, CreditCard, Sparkles, RefreshCw, ChevronRight, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Step = "goal" | "income" | "habits" | "complete";
@@ -26,31 +26,39 @@ export function OnboardingLayer() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-8 rounded-3xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden">
+    <div className="w-full h-full min-h-[400px] flex flex-col justify-center">
       <AnimatePresence mode="wait">
         {step === "goal" && (
           <motion.div
             key="goal"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="space-y-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
           >
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Target className="text-indigo-600" />
+              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                  <Target className="text-emerald-400 w-5 h-5" />
+                </div>
                 What's your primary goal?
               </h2>
-              <p className="text-zinc-500 dark:text-zinc-400">This helps me tailor my suggestions for you.</p>
+              <p className="text-zinc-500 text-sm">Help StockSage tailor your investment strategies.</p>
             </div>
-            <div className="grid grid-cols-1 gap-3">
-              {["Save for a big purchase", "Invest for long term", "Reduce debt", "Track daily spending"].map((opt) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { label: "Long-term Wealth", sub: "10+ year horizon" },
+                { label: "Aggressive Growth", sub: "High risk, high reward" },
+                { label: "Passive Income", sub: "Dividends & stability" },
+                { label: "Market Hedging", sub: "Risk management" }
+              ].map((opt) => (
                 <button
-                  key={opt}
-                  onClick={() => nextStep("goal", opt, "income")}
-                  className="w-full text-left p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-600 dark:hover:border-indigo-500 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/5 transition-all font-medium text-zinc-700 dark:text-zinc-300"
+                  key={opt.label}
+                  onClick={() => nextStep("goal", opt.label, "income")}
+                  className="group text-left p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all"
                 >
-                  {opt}
+                  <p className="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors">{opt.label}</p>
+                  <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">{opt.sub}</p>
                 </button>
               ))}
             </div>
@@ -60,26 +68,29 @@ export function OnboardingLayer() {
         {step === "income" && (
           <motion.div
             key="income"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="space-y-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
           >
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Wallet className="text-indigo-600" />
-                Monthly income range?
+              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                  <Wallet className="text-emerald-400 w-5 h-5" />
+                </div>
+                Net worth range?
               </h2>
-              <p className="text-zinc-500 dark:text-zinc-400">Rough estimate is fine.</p>
+              <p className="text-zinc-500 text-sm">Strictly for risk-assessment purposes.</p>
             </div>
             <div className="grid grid-cols-1 gap-3">
-              {["Under ₹50k", "₹50k - ₹1.5L", "₹1.5L - ₹3L", "Above ₹3L"].map((opt) => (
+              {["< ₹10 Lakhs", "₹10L - ₹50L", "₹50L - ₹2 Cr", "Institutional / Ultra HNI"].map((opt) => (
                 <button
                   key={opt}
                   onClick={() => nextStep("income", opt, "habits")}
-                  className="w-full text-left p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-600 dark:hover:border-indigo-500 transition-all font-medium text-zinc-700 dark:text-zinc-300"
+                  className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-white font-bold text-sm"
                 >
                   {opt}
+                  <ChevronRight className="w-4 h-4 text-zinc-600" />
                 </button>
               ))}
             </div>
@@ -89,26 +100,29 @@ export function OnboardingLayer() {
         {step === "habits" && (
           <motion.div
             key="habits"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="space-y-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-8"
           >
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <CreditCard className="text-indigo-600" />
-                Spending habits?
+              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                  <CreditCard className="text-emerald-400 w-5 h-5" />
+                </div>
+                Trading frequency?
               </h2>
-              <p className="text-zinc-500 dark:text-zinc-400">Be honest, I'm here to help!</p>
+              <p className="text-zinc-500 text-sm">Frequency determines the latency of AI signals.</p>
             </div>
             <div className="grid grid-cols-1 gap-3">
-              {["Careful & Plan ahead", "Impulsive sometimes", "Usually over budget", "Don't track at all"].map((opt) => (
+              {["Intraday Scalper", "Swing Trader", "Positional Investor", "Lumpsum / SIP"].map((opt) => (
                 <button
                   key={opt}
                   onClick={() => nextStep("habits", opt, "complete")}
-                  className="w-full text-left p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-600 dark:hover:border-indigo-500 transition-all font-medium text-zinc-700 dark:text-zinc-300"
+                  className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all text-white font-bold text-sm"
                 >
                   {opt}
+                  <ChevronRight className="w-4 h-4 text-zinc-600" />
                 </button>
               ))}
             </div>
@@ -120,34 +134,35 @@ export function OnboardingLayer() {
             key="complete"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center space-y-6 py-4"
+            className="text-center space-y-8 py-4"
           >
-            <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-950/50 rounded-full flex items-center justify-center mx-auto">
-              <Sparkles className="w-8 h-8 text-indigo-600" />
+            <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+              <Sparkles className="w-10 h-10 text-emerald-400" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">Profile Ready!</h2>
-              <p className="text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto">
-                Based on your goal to <span className="text-indigo-600 font-semibold">{data.goal.toLowerCase()}</span>, 
-                I'll adopt a <span className="italic">"{data.habits === "Careful & Plan ahead" ? "Strategic" : "Supportive"}"</span> tone.
+              <h2 className="text-3xl font-bold text-white">Strategy Synced</h2>
+              <p className="text-zinc-400 max-w-sm mx-auto text-sm leading-relaxed">
+                StockSage is now optimized for <span className="text-emerald-400 font-bold">{data.goal}</span>. 
+                Your risk engine has been set to <span className="italic">"{data.habits === "Intraday Scalper" ? "High Latency / Aggressive" : "Standard / Balanced"}"</span>.
               </p>
             </div>
             
-            <div className="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 text-left">
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-2">AI Greeting Example</p>
-              <p className="text-zinc-700 dark:text-zinc-300">
-                {data.habits === "Careful & Plan ahead" 
-                  ? "Great to see a disciplined planner. Let's look at your portfolio optimization for today."
-                  : "Welcome back! Don't worry about yesterday's spend. Let's find some quick wins to get back on track."}
+            <div className="p-6 bg-white/5 rounded-3xl border border-white/5 text-left space-y-4">
+              <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                AI PROVISIONING COMPLETE
+              </div>
+              <p className="text-zinc-300 text-sm italic leading-relaxed">
+                "Welcome to the inner circle. I've updated your dashboard with real-time {data.goal.toLowerCase()} signals. Let's find your first trade."
               </p>
             </div>
 
             <button
               onClick={reset}
-              className="flex items-center gap-2 mx-auto text-zinc-500 hover:text-indigo-600 transition-colors text-sm font-medium"
+              className="flex items-center gap-2 mx-auto text-zinc-500 hover:text-emerald-400 transition-colors text-xs font-bold uppercase tracking-widest"
             >
               <RefreshCw className="w-4 h-4" />
-              Reset Experience
+              Reset Profile
             </button>
           </motion.div>
         )}
