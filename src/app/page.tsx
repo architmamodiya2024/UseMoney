@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { GreetingHeader } from "@/components/GreetingHeader";
 import { OnboardingLayer } from "@/components/OnboardingLayer";
 import { AIAssistant } from "@/components/AIAssistant";
-import { Table, Globe, Layout, Search, TrendingUp, ShieldCheck, Zap } from "lucide-react";
+import { Table, Globe, Layout, Search, TrendingUp, ShieldCheck, Zap, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const marketData = [
@@ -28,14 +28,33 @@ export default function Home() {
 
         {/* Content Section */}
         <div className="flex-1 overflow-y-auto p-6 pt-0 space-y-6 scroll-smooth">
-          <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            {/* Left Column: AI Assistant (Central Focus) */}
+            {/* Left Column: Personalized Onboarding Layer (Main Focus) */}
             <div className="lg:col-span-8">
-              <AIAssistant />
+               <div className="bg-[#0f172a]/50 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-8 md:p-12 shadow-2xl h-full flex flex-col justify-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 p-12 opacity-5 pointer-events-none">
+                  <Sparkles className="w-64 h-64 text-emerald-400" />
+                </div>
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                      <Layout className="w-4 h-4 text-emerald-400" />
+                      Persona Configuration
+                    </h2>
+                    <button 
+                      onClick={() => setIsNewUser(!isNewUser)}
+                      className="px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 uppercase tracking-widest hover:bg-emerald-500/20 transition-all"
+                    >
+                      {isNewUser ? "Switch to Returning" : "Switch to New"}
+                    </button>
+                  </div>
+                  <OnboardingLayer />
+                </div>
+              </div>
             </div>
 
-            {/* Right Column: Secondary Modules */}
+            {/* Right Column: Market & Status */}
             <div className="lg:col-span-4 space-y-6">
               
               {/* Market Watch Card */}
@@ -45,9 +64,6 @@ export default function Home() {
                     <TrendingUp className="w-4 h-4 text-emerald-400" />
                     Market Watch
                   </h3>
-                  <button className="text-[10px] font-bold text-emerald-400 hover:underline uppercase tracking-widest">
-                    View All
-                  </button>
                 </div>
                 <div className="space-y-4">
                   {marketData.map((m) => (
@@ -68,44 +84,29 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Onboarding Card (Only if new) */}
-              {isNewUser && (
-                <div className="bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 rounded-[2.5rem] p-6 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-6 opacity-20">
-                    <Zap className="w-20 h-20 text-emerald-400" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">Connect Broker</h3>
-                  <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                    Unlock StockSage's full potential by connecting your Demat account for live insights.
-                  </p>
-                  <button className="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-500/20">
-                    Connect Now
-                  </button>
-                </div>
-              )}
-
               {/* Trust Badge Card */}
-              <div className="p-6 bg-white/5 border border-white/5 rounded-[2.5rem] flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
+              <div className="p-6 bg-[#0f172a]/50 backdrop-blur-xl border border-white/5 rounded-[2.5rem] flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                   <ShieldCheck className="w-6 h-6 text-emerald-400" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">Bank Grade Security</p>
-                  <p className="text-[10px] text-zinc-500">Your data is AES-256 encrypted</p>
+                  <p className="text-xs font-bold text-white">Quantum Encryption</p>
+                  <p className="text-[10px] text-zinc-500">End-to-end secure signals</p>
                 </div>
               </div>
 
-              <button 
-                onClick={() => setIsNewUser(!isNewUser)}
-                className="w-full py-2 text-[10px] font-bold text-zinc-600 uppercase tracking-widest hover:text-emerald-400 transition-colors"
-              >
-                Toggle Mode: {isNewUser ? "New User" : "Returning User"}
-              </button>
-
+               {/* Competitor Quick Link */}
+               <div className="bg-white/5 border border-white/5 rounded-[2.5rem] p-6 text-center">
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Internal Research</p>
+                  <p className="text-xs text-zinc-400">View detailed <span className="text-emerald-400 font-bold">Competitor Analysis</span> for AI Finance.</p>
+               </div>
             </div>
           </div>
         </div>
       </main>
+
+      {/* Small Box AI Assistant (Floating) */}
+      <AIAssistant />
     </div>
   );
 }
